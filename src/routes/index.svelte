@@ -17,7 +17,19 @@
 </script>
 
 <script type="ts">
+	import {goto} from "$app/navigation"
 	import { session } from '$app/stores';
+	import {auth0} from '../auth0';
+
+
+	async function logout() {
+		const res = await fetch('/auth_cookie.json', {method: 'DELETE'})
+		if (res.ok)  {
+			$session = {user: {guest: true}, isAuthenticated: false};
+			await goto('/login')
+		}
+		await auth0.logout();
+	}
 </script>
 
 <!-- Display the user details -->
@@ -26,3 +38,7 @@
 		<p><b>{key}</b>: {$session.user[key]}</p>
 	{/each}
 {/if}
+
+<button type="button" on:click={logout}> Logout </button>
+
+
